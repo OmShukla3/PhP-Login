@@ -8,15 +8,24 @@
         body {
             font-family: Arial, sans-serif;
             text-align: center;
-            margin-top: 100px;
+            margin: 50px;
+        }
+        .container {
+            max-width: 400px;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
         }
         button {
-            padding: 10px 20px;
-            font-size: 18px;
             background-color: #28a745;
             color: white;
             border: none;
+            padding: 10px 20px;
+            font-size: 18px;
             cursor: pointer;
+            border-radius: 5px;
         }
         button:hover {
             background-color: #218838;
@@ -25,13 +34,27 @@
 </head>
 <body>
 
-    <h2>Login to Continue</h2>
-    <button onclick="loginUser()">Login</button>
+    <div class="container">
+        <h2>Welcome! Please Login</h2>
+        <button onclick="sendLoginSuccess()">Login</button>
+    </div>
 
     <script>
-        function loginUser() {
-            // जब यूजर लॉगिन करेगा, उसे ऐप में वापस भेजेंगे
-            window.location.href = "myapp://login_success";
+        function sendLoginSuccess() {
+            // 6 घंटे के लिए लॉगिन टाइम सेट करें
+            localStorage.setItem("last_login", Date.now());
+
+            // ऐप को लॉगिन सिग्नल भेजें
+            var iframe = document.createElement("iframe");
+            iframe.style.display = "none";
+            iframe.src = "intent://com.omshukla.LOGIN_SUCCESS#Intent;action=com.omshukla.LOGIN_SUCCESS;end";
+            document.body.appendChild(iframe);
+        }
+
+        // अगर पहले से लॉगिन है और 6 घंटे पूरे नहीं हुए हैं, तो डायरेक्ट एप में भेजें
+        const lastLogin = localStorage.getItem("last_login");
+        if (lastLogin && (Date.now() - lastLogin) < 21600000) { // 6 घंटे = 21600000ms
+            window.location.href = "intent://com.omshukla.LOGIN_SUCCESS#Intent;action=com.omshukla.LOGIN_SUCCESS;end";
         }
     </script>
 
